@@ -13,10 +13,10 @@ try :
     print(result)
 
 except requests.exceptions.HTTPError as e:
-    print(f" Erreur Serveur : {e}")
-except requests.exceptions.ConnectionError:
-    print(f" Probleme de connexion .")
-except requests.exceptions.Timeout:
-    print(f"Serveur trop lent .")
+    print(f"Erreur serveur : {e}")
+except requests.exceptions.ConnectionError as e:
+    print(f"Problème de connexion : {e}")
+except requests.exceptions.Timeout as e:
+    print(f"Le serveur a mis trop de temps à répondre : {e}")
 except requests.exceptions.RequestException as e:
-    print(f" Erreur quelconque : {e}")
+    print(f"Erreur inattendue : {e}")
