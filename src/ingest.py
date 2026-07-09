@@ -7,16 +7,16 @@ load_dotenv()
 token = os.getenv("API_token")
 
 try :
-    reponse = requests.get(f"https://v6.exchangerate-api.com/v6/{token}/latest/USD")
-    reponse.raise_for_status()
-    result = reponse.json()
+    response = requests.get(f"https://v6.exchangerate-api.com/v6/{token}/latest/USD")
+    response.raise_for_status()
+    result = response.json()
     print(result)
 
 except requests.exceptions.HTTPError as e:
-    print(f"Erreur serveur : {e}")
+    print(f"Server error: {e}")
 except requests.exceptions.ConnectionError as e:
-    print(f"Problème de connexion : {e}")
+    print(f"Connection error: {e}")
 except requests.exceptions.Timeout as e:
-    print(f"Le serveur a mis trop de temps à répondre : {e}")
+    print(f"Server took too long to respond: {e}")
 except requests.exceptions.RequestException as e:
-    print(f"Erreur inattendue : {e}")
+    print(f"Exception error: {e}")

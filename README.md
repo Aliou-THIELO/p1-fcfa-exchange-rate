@@ -1,46 +1,46 @@
 # P1 — FCFA Exchange Rate Tracker
 
-## Objectif
+## Objective
 
-Ce projet vise à suivre l'évolution du franc CFA (XOF) face aux devises hors zone euro (USD, CNY), afin d'aider les PME, commerçants et particuliers sénégalais à identifier le bon moment pour effectuer leurs transactions internationales (importations, échanges commerciaux).
+This project tracks the evolution of the CFA franc (XOF) against non-euro currencies (USD, CNY), helping Senegalese SMEs, merchants, and individuals identify the right time to carry out international transactions (imports, trade exchanges).
 
-##  Ce que fait ce projet
+## What this project does
 
-Le pipeline récupère quotidiennement les taux de change USD → XOF, EUR → XOF et CNY → XOF depuis une API externe, valide la structure des données, puis les stocke pour une analyse ultérieure (tendances, alertes, visualisation).
+The pipeline fetches daily exchange rates for USD → XOF, EUR → XOF, and CNY → XOF from an external API, validates the data structure, and stores it for further analysis (trends, alerts, visualization).
 
-##  Stack technique
+## Tech stack
 
 - Python
 - requests
 - python-dotenv
-- Pydantic *(à venir)*
-- Parquet *(à venir)*
+- Pydantic *(coming soon)*
+- Parquet *(coming soon)*
 
-##  Installation
+## Installation
 
-1. Cloner le repo
+1. Clone the repo
 ```bash
    git clone https://github.com/Aliou-THIELO/p1-fcfa-exchange-rate.git
    cd p1-fcfa-exchange-rate
 ```
-2. Installer les dépendances
+2. Install dependencies
 ```bash
    pip install -r requirements.txt
 ```
-3. Créer un fichier `.env` à la racine avec ta clé API :
+3. Create a `.env` file at the project root with your API key:
 
 ```
-   API_token=ta_cle_ici
+   API_token=your_api_key_here
 ```
 
-## Structure du projet
+## Project structure
 
 ```
 p1-fcfa-exchange-rate/
-├── data/          # Données brutes et transformées
+├── data/          # Raw and processed data
 ├── src/
-│   └── ingest.py  # Script d'ingestion des taux de change
-├── .env           # Clé API (non versionné)
+│   └── ingest.py  # Exchange rate ingestion script
+├── .env           # API key (not versioned)
 ├── requirements.txt
 └── README.md
 ```
