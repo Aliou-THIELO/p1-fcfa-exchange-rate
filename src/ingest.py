@@ -36,6 +36,12 @@ class ExchangeRateClient:
         adapter = HTTPAdapter(max_retries=retry)
         self.session.mount("https://", adapter)
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.session.close()
+
     def _appel(self, endpoint: str, param: dict) -> dict:
         url = f"{self.base}/{self.token}/{endpoint}"
 
@@ -68,9 +74,9 @@ if __name__ == "__main__":
     token = os.getenv("API_token")
 
     try:
-        client = ExchangeRateClient("https://v6.exchangerate-api.com/v6", token)
-        result = client.get_latest_rates("USD")
-        print(result)
+        with ExchangeRateClient("https://v6.exchangerate-api.com/v6", token) as client:
+            result = client.get_latest_rates("USD")
+            print(result)
 
     except AuthError as e:
         log.error(f"Error Authorization: {e}")
@@ -80,3 +86,5 @@ if __name__ == "__main__":
         log.error(f"Server error: {e}")
     except APIError as e:
         log.error(f"API error: {e}")
+
+# the session is already closed automatically
