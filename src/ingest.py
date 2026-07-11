@@ -3,9 +3,14 @@ import os
 from urllib3.util import Retry
 from requests.adapters import HTTPAdapter
 from dotenv import load_dotenv
+import logging
 
-load_dotenv()
-token = os.getenv("API_token")
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    datefmt="%H:%M:%S"
+)
+log = logging.getLogger(__name__)
 
 
 class APIError(Exception):
@@ -59,16 +64,19 @@ class ExchangeRateClient:
 
 
 if __name__ == "__main__":
+    load_dotenv()
+    token = os.getenv("API_token")
+
     try:
         client = ExchangeRateClient("https://v6.exchangerate-api.com/v6", token)
         result = client.get_latest_rates("USD")
         print(result)
 
     except AuthError as e:
-        print(f"Error Authorization: {e}")
+        log.error(f"Error Authorization: {e}")
     except NotFoundError as e:
-        print(f"Not found: {e}")
+        log.error(f"Not found: {e}")
     except ServerError as e:
-        print(f"Server error: {e}")
+        log.error(f"Server error: {e}")
     except APIError as e:
-        print(f"API error: {e}")
+        log.error(f"API error: {e}")
