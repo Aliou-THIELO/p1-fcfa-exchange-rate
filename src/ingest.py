@@ -37,3 +37,6 @@ class ExchangeRateClient:
             print(f"Server took too long to respond: {e}")
         except requests.exceptions.RequestException as e:
             print(f"Exception error: {e}")
+            
+    def get_latest_rates(self, base_currency: str):
+        return self._appel(f"latest/{base_currency}", param={})
