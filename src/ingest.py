@@ -20,3 +20,20 @@ class ExchangeRateClient:
               status_forcelist=[500, 501, 502, 503])
         adapter = HTTPAdapter(max_retries=retry)
         self.session.mount("https://", adapter)
+
+    def _appel(self, endpoint: str, param: dict) -> dict:
+        url = f"{self.base}/{self.token}/{endpoint}"
+
+        try:
+            response = self.session.get(url, params=param, timeout=10)
+            response.raise_for_status()
+            return response.json()
+
+        except requests.exceptions.HTTPError as e:
+            print(f"Server error: {e}")
+        except requests.exceptions.ConnectionError as e:
+            print(f"Connection error: {e}")
+        except requests.exceptions.Timeout as e:
+            print(f"Server took too long to respond: {e}")
+        except requests.exceptions.RequestException as e:
+            print(f"Exception error: {e}")
