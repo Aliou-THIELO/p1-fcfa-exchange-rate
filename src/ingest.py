@@ -42,11 +42,12 @@ class ExchangeRateClient:
     def __exit__(self, exc_type, exc_value, traceback):
         self.session.close()
 
-    def _appel(self, endpoint: str, param: dict) -> dict:
+    def _request(self, endpoint: str, params: dict | None = None) -> dict:
         url = f"{self.base}/{self.token}/{endpoint}"
+        params = params or {}
 
         try:
-            response = self.session.get(url, params=param, timeout=10)
+            response = self.session.get(url, params=params, timeout=10)
             response.raise_for_status()
             return response.json()
 
@@ -60,13 +61,15 @@ class ExchangeRateClient:
                 raise ServerError(f"Server error: {code}") from e
             else:
                 raise APIError(f"Unexpected API error: {code}") from e
+        except ValueError as e:
+            raise APIError("Invalid JSON response from API") from e
         except requests.exceptions.Timeout:
-            raise APIError(f"Timeout.") from None
+            raise APIError("Timeout.") from None
         except requests.exceptions.ConnectionError:
-            raise APIError(f"Connection error.") from None
+            raise APIError("Connection error.") from None
 
-    def get_latest_rates(self, base_currency: str):
-        return self._appel(f"latest/{base_currency}", param={})
+    def get_latest_rates(self, base_currency: str) -> dict:
+        return self._request(f"latest/{base_currency}")
 
 
 if __name__ == "__main__":
@@ -79,7 +82,7 @@ if __name__ == "__main__":
     try:
         with ExchangeRateClient("https://v6.exchangerate-api.com/v6", token) as client:
             result = client.get_latest_rates("USD")
-            print(result)
+            log.info(result)
 
     except AuthError as e:
         log.error(f"Error Authorization: {e}")
