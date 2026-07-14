@@ -32,7 +32,7 @@ class ExchangeRateClient:
         self.session = requests.Session()
         retry = Retry(total=3,
               backoff_factor=1,
-              status_forcelist=[500, 501, 502, 503])
+              status_forcelist=[429, 500, 501, 502, 503])
         adapter = HTTPAdapter(max_retries=retry)
         self.session.mount("https://", adapter)
 
@@ -52,7 +52,7 @@ class ExchangeRateClient:
 
         except requests.exceptions.HTTPError as e:
             code = e.response.status_code
-            if 400 <= code <= 403:
+            if code in (401, 403):
                 raise AuthError(f"Access denied: {code}") from e
             elif code == 404:
                 raise NotFoundError(f"Resource not found: {code}") from e
@@ -72,6 +72,9 @@ class ExchangeRateClient:
 if __name__ == "__main__":
     load_dotenv()
     token = os.getenv("API_token")
+
+    if not token:
+        raise ValueError("API_token is missing. Please set it in your .env file.")
 
     try:
         with ExchangeRateClient("https://v6.exchangerate-api.com/v6", token) as client:
