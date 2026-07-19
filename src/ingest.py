@@ -4,6 +4,7 @@ from urllib3.util import Retry
 from requests.adapters import HTTPAdapter
 from dotenv import load_dotenv
 import logging
+from schemas import BaseSchemas
 
 logging.basicConfig(
     level=logging.INFO,
@@ -82,7 +83,8 @@ if __name__ == "__main__":
     try:
         with ExchangeRateClient("https://v6.exchangerate-api.com/v6", token) as client:
             result = client.get_latest_rates("USD")
-            log.info(result)
+            validated = BaseSchemas.model_validate(result)
+            log.info(validated)
 
     except AuthError as e:
         log.error(f"Error Authorization: {e}")
