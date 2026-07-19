@@ -5,6 +5,7 @@ from requests.adapters import HTTPAdapter
 from dotenv import load_dotenv
 import logging
 from schemas import BaseSchemas
+from pydantic import ValidationError
 
 logging.basicConfig(
     level=logging.INFO,
@@ -83,9 +84,12 @@ if __name__ == "__main__":
     try:
         with ExchangeRateClient("https://v6.exchangerate-api.com/v6", token) as client:
             result = client.get_latest_rates("USD")
-            validated = BaseSchemas.model_validate(result)
-            log.info(validated)
-
+            try:
+                validated = BaseSchemas.model_validate(result)
+                log.info(validated)
+            except ValidationError as e:
+                for error in e.errors():
+                    log.error(f"{error['loc']} --> {error['type']} --> {error['msg']}")
     except AuthError as e:
         log.error(f"Error Authorization: {e}")
     except NotFoundError as e:
