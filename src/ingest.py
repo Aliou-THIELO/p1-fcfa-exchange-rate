@@ -6,6 +6,9 @@ from dotenv import load_dotenv
 import logging
 from schemas import BaseSchemas
 from pydantic import ValidationError
+import pandas as pd
+import pyarrow
+from datetime import datetime
 
 logging.basicConfig(
     level=logging.INFO,
@@ -87,6 +90,10 @@ if __name__ == "__main__":
             try:
                 validated = BaseSchemas.model_validate(result)
                 log.info(validated)
+                now = datetime.now()
+                df = pd.DataFrame([validated.conversion_rates.model_dump()])
+                df["DATE"] = now
+                print(df)
             except ValidationError as e:
                 for error in e.errors():
                     log.error(f"{error['loc']} --> {error['type']} --> {error['msg']}")
