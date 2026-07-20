@@ -93,6 +93,8 @@ if __name__ == "__main__":
                 now = datetime.now()
                 df = pd.DataFrame([validated.conversion_rates.model_dump()])
                 df["DATE"] = now
+                file_path = f"data/{now.strftime('%Y-%m-%d')}.parquet"
+                df.to_parquet(file_path, index=False)
                 print(df)
             except ValidationError as e:
                 for error in e.errors():

@@ -6,15 +6,16 @@ This project tracks the evolution of the CFA franc (XOF) against non-euro curren
 
 ## What this project does
 
-The pipeline fetches daily exchange rates for USD → XOF, EUR → XOF, and CNY → XOF from an external API, validates the data structure, and stores it for further analysis (trends, alerts, visualization).
+The pipeline fetches daily exchange rates for USD → XOF, EUR → XOF, and CNY → XOF from an external API, validates the data structure using Pydantic, and stores the result as a daily Parquet file for further analysis (trends, alerts, visualization).
 
 ## Tech stack
 
 - Python
 - requests
 - python-dotenv
-- Pydantic *(coming soon)*
-- Parquet *(coming soon)*
+- Pydantic
+- pandas
+- Parquet
 
 ## Installation
 
@@ -32,15 +33,19 @@ The pipeline fetches daily exchange rates for USD → XOF, EUR → XOF, and CNY 
 ```
    API_token=your_api_key_here
 ```
+## Data
+
+Data files are not tracked in version control, except for one sample file (`data/2026-07-20.parquet`) demonstrating the pipeline's output format. Each run generates a new Parquet file partitioned by date.
 
 ## Project structure
 
 ```
 p1-fcfa-exchange-rate/
-├── data/          # Raw and processed data
+├── data/ # Daily exchange rate snapshots (Parquet, mostly untracked)
 ├── src/
-│   └── ingest.py  # Exchange rate ingestion script
-├── .env           # API key (not versioned)
+│ ├── ingest.py # API client, validation, and Parquet export
+│ └── schemas.py # Pydantic models for API response validation
+├── .env # API key (not versioned)
 ├── requirements.txt
 └── README.md
 ```
